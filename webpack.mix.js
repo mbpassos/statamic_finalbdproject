@@ -1,42 +1,42 @@
-/*WEBPACK BUNDLE
-*
-* -> WATCH | COMPILE AND MINIFY CSS AND JS
-* -> RUN: 'yarn mix' ONLY FOR COMPILE ASSETS
-* -> RUN: 'yarn mix watch' FOR COMPILE AND WATCH ASSETS CHANGES
-* -> RUN: 'yarn mix --production 'FOR COMPILE AND MINIFY ALL ASSETS FOR PRODUCTION'
-*
+const mix = require('laravel-mix');
+
+/*
+ |--------------------------------------------------------------------------
+ | Mix Asset Management
+ |--------------------------------------------------------------------------
+ |
+ | Mix provides a clean, fluent API for defining some Webpack build steps
+ | for your Laravel applications. By default, we are compiling the CSS
+ | file for the application as well as bundling up all the JS files.
+ |
  */
 
-let mix = require('laravel-mix');
-var LiveReloadPlugin = require('webpack-livereload-plugin');
+mix.js('resources/js/site.js', 'public/js')
 
-/*SCSS AND JS FILES*/
-mix.sass('resources/assets/scss/app.scss', 'dist/css')
-    .options({
-        autoprefixer: {
-            options: {
-                browsers: [
-                    'last 3 versions',
-                ]
-            }
-        }
-    })
-    .sourceMaps()
-    .setPublicPath('public');
-/*mix.minify('public/dist/css/app.css');*/
+mix.postCss('resources/css/tailwind.css', 'public/css', [
+    require('postcss-import'),
+    require('tailwindcss/nesting'),
+    require('tailwindcss'),
+])
 
-
-/*JS FILES*/
-mix.js('resources/assets/js/app.js', 'dist/js')
-    .sourceMaps()
-    .setPublicPath('public');
-
-/*mix.minify('public/dist/js/app.js');*/
-
-/*WATCH FILES CHANGES*/
-module.exports = {
-    plugins: [
-        new LiveReloadPlugin()
-    ]
+if (mix.inProduction()) {
+    mix.version();
 }
+
+/*
+ |--------------------------------------------------------------------------
+ | Statamic Control Panel
+ |--------------------------------------------------------------------------
+ |
+ | Feel free to add your own JS or CSS to the Statamic Control Panel.
+ | https://statamic.dev/extending/control-panel#adding-css-and-js-assets
+ |
+ */
+
+// mix.js('resources/js/cp.js', 'public/vendor/app/js')
+//    .postCss('resources/css/cp.css', 'public/vendor/app/css', [
+//     require('postcss-import'),
+//     require('tailwindcss/nesting'),
+//     require('tailwindcss'),
+// ])
 
